@@ -1,0 +1,16 @@
+{{ if .Mods }}
+
+    <h1>Наши моды:</h1>
+
+    {{ range .Mods }} <p>{{ .Name }}</p> {{ end }}
+
+{{ else }}
+
+    <h1>Модов ещё нет, но вы можете заглянуть позже</h1>
+
+{{ end }}
+
+<form method="POST">
+    <input type="text" name="name">
+    <button type="submit">Добавить!</button>
+</form>
