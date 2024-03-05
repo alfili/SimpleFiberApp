@@ -4,8 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ if .Title }} {{ .Title }} {{ else }} Мой Сайт {{ end }}</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
-    {{ embed }}
+    {{ template "partials/navbar" . }}
+    <div class="max-w-6xl mx-auto px-4">
+        {{ embed }}
+    </div>
 </body>
 </html>

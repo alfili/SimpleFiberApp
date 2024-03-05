@@ -2,15 +2,13 @@
 
     <h1>Наши моды:</h1>
 
-    {{ range .Mods }} <p>{{ .Name }}</p> {{ end }}
+    <div class="mod_list"></div>
+    {{ range .Mods }}
+        <a href="/mods/{{ .ID }}">{{ .Name }}</a><br>
+    {{ end }}
 
 {{ else }}
 
     <h1>Модов ещё нет, но вы можете заглянуть позже</h1>
 
 {{ end }}
-
-<form method="POST">
-    <input type="text" name="name">
-    <button type="submit">Добавить!</button>
-</form>

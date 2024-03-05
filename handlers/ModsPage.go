@@ -35,6 +35,12 @@ func GetOneModPage(c *fiber.Ctx) error {
 	}, "layouts/main")
 }
 
+func ModsAddForm(c *fiber.Ctx) error {
+	return c.Render("pages/add_mod_form", fiber.Map{
+		"Title": "Добавить новый мод",
+	}, "layouts/main")
+}
+
 func ModsAddPost(c *fiber.Ctx) error {
 	name := c.FormValue("name")
 	description := c.FormValue("description")
