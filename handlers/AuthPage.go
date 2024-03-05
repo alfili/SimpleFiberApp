@@ -39,3 +39,20 @@ func RegisterUser(c *fiber.Ctx) error {
 		"Title": "Войти",
 	}, "layouts/main")
 }
+
+func LoginUser(c *fiber.Ctx) error {
+
+	username := c.FormValue("username")
+	password := c.FormValue("password")
+
+	var user models.User
+	db.DBConn.Where("username = ?", username).First(&user)
+
+	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+
+	if err != nil {
+		return c.SendString("Не удалось войти! Попробуйте снова")
+	}
+
+	return c.SendString("Удалось войти!")
+}
