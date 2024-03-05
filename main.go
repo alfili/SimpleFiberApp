@@ -34,5 +34,7 @@ func SetupRouter(a *fiber.App) {
 	a.Post("/create/mod", handlers.ModsAddPost)
 
 	a.Get("/login", handlers.LoginPage)
+
 	a.Get("/reg", handlers.RegisterPage)
+	a.Post("/reg", handlers.RegisterUser)
 }

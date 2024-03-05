@@ -4,7 +4,10 @@ go 1.21.1
 
 require github.com/gofiber/template/html/v2 v2.1.1
 
-require github.com/go-sql-driver/mysql v1.7.0 // indirect
+require (
+	github.com/go-sql-driver/mysql v1.7.0 // indirect
+	golang.org/x/crypto v0.21.0 // indirect
+)
 
 require (
 	github.com/andybalholm/brotli v1.0.5 // indirect
@@ -22,7 +25,7 @@ require (
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.51.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
-	golang.org/x/sys v0.15.0 // indirect
+	golang.org/x/sys v0.18.0 // indirect
 	gorm.io/driver/mysql v1.5.4
 	gorm.io/gorm v1.25.7 // indirect
 )
