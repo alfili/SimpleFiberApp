@@ -1,8 +1,11 @@
 package handlers
 
 import (
+	"fmt"
 	"simplefiberapp/db"
 	"simplefiberapp/models"
+	"simplefiberapp/tools"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"golang.org/x/crypto/bcrypt"
@@ -53,6 +56,18 @@ func LoginUser(c *fiber.Ctx) error {
 	if err != nil {
 		return c.SendString("Не удалось войти! Попробуйте снова")
 	}
+
+	err = tools.Store.Sessions.Storage.Set("user", []byte(username), time.Hour*12)
+	if err != nil {
+		return c.SendString("Не удалось войти! Попробуйте снова")
+	}
+
+	sessUser, err := tools.Store.Sessions.Storage.Get("user")
+	if err != nil {
+		return c.SendString("Не удалось войти! Попробуйте снова")
+	}
+
+	fmt.Println(string(sessUser))
 
 	return c.SendString("Удалось войти!")
 }

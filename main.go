@@ -2,15 +2,19 @@ package main
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/session"
 	"github.com/gofiber/template/html/v2"
 
 	"simplefiberapp/db"
 	"simplefiberapp/handlers"
+	"simplefiberapp/tools"
 )
 
 var appPort string = "5000"
 
 func main() {
+
+	tools.Store = tools.Storage{Sessions: session.New()}
 
 	db.ConnectDB()
 
