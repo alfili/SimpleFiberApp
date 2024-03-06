@@ -5,9 +5,11 @@ import (
 	"simplefiberapp/db"
 	"simplefiberapp/models"
 	"simplefiberapp/tools"
+	"strconv"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -43,6 +45,7 @@ func RegisterUser(c *fiber.Ctx) error {
 	}, "layouts/main")
 }
 
+// Сессии можно хранить в приложении в формате "токен куки": "id"
 func LoginUser(c *fiber.Ctx) error {
 
 	username := c.FormValue("username")
@@ -57,17 +60,32 @@ func LoginUser(c *fiber.Ctx) error {
 		return c.SendString("Не удалось войти! Попробуйте снова")
 	}
 
-	err = tools.Store.Sessions.Storage.Set("user", []byte(username), time.Hour*12)
+	c.Cookie(&fiber.Cookie{
+		Name:    "Token",
+		Value:   uuid.NewString(),
+		Path:    "/",
+		Expires: time.Now().Add(time.Hour * 12),
+	})
+
+	err = tools.Store.Sessions.Storage.Set(c.Cookies("Token"), []byte(strconv.Itoa(int(user.ID))), time.Hour*12)
 	if err != nil {
 		return c.SendString("Не удалось войти! Попробуйте снова")
 	}
 
-	sessUser, err := tools.Store.Sessions.Storage.Get("user")
-	if err != nil {
-		return c.SendString("Не удалось войти! Попробуйте снова")
-	}
+	// cookie := http.Cookie{
+	// 	Name:     "Token",
+	// 	Value:    uuid.NewString(),
+	// 	Path:     "/",
+	// 	MaxAge:   int(time.Hour * 12),
+	// 	SameSite: http.SameSiteLaxMode,
+	// }
 
-	fmt.Println(string(sessUser))
+	// sessUser, err := tools.Store.Sessions.Storage.Get()
+	// if err != nil {
+	// 	return c.SendString("Не удалось войти! Попробуйте снова")
+	// }
+
+	fmt.Println(c.Cookies("Token"))
 
 	return c.SendString("Удалось войти!")
 }

@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/session"
 	"github.com/gofiber/template/html/v2"
@@ -22,6 +24,16 @@ func main() {
 
 	app := fiber.New(fiber.Config{
 		Views: engine,
+	})
+
+	// middleware для аутентификации
+	app.Use(func(c *fiber.Ctx) error {
+		fmt.Println(c.Cookies("Token"))
+
+		sessCookie, _ := tools.Store.Sessions.Storage.Get(c.Cookies("Token"))
+
+		fmt.Println("SESSION: " + string(sessCookie))
+		return c.Next()
 	})
 
 	SetupRouter(app)
