@@ -23,18 +23,11 @@ func main() {
 	engine := html.New("./views", ".html")
 
 	app := fiber.New(fiber.Config{
-		Views: engine,
+		Views:             engine,
+		PassLocalsToViews: true,
 	})
 
-	// middleware для аутентификации
-	app.Use(func(c *fiber.Ctx) error {
-		fmt.Println(c.Cookies("Token"))
-
-		sessCookie, _ := tools.Store.Sessions.Storage.Get(c.Cookies("Token"))
-
-		fmt.Println("SESSION: " + string(sessCookie))
-		return c.Next()
-	})
+	SetupMiddleware(app)
 
 	SetupRouter(app)
 
@@ -54,4 +47,21 @@ func SetupRouter(a *fiber.App) {
 
 	a.Get("/reg", handlers.RegisterPage)
 	a.Post("/reg", handlers.RegisterUser)
+}
+
+func SetupMiddleware(a *fiber.App) {
+	// middleware для аутентификации
+	a.Use(func(c *fiber.Ctx) error {
+		fmt.Println(c.Cookies("Token"))
+
+		sessCookie, err := tools.Store.Sessions.Storage.Get(c.Cookies("Token"))
+		if err != nil {
+			fmt.Println("ERROR: " + err.Error())
+		}
+
+		fmt.Println("SESSION: " + string(sessCookie))
+		return c.Next()
+	})
+
+	a.Use(handlers.Me)
 }

@@ -72,20 +72,26 @@ func LoginUser(c *fiber.Ctx) error {
 		return c.SendString("Не удалось войти! Попробуйте снова")
 	}
 
-	// cookie := http.Cookie{
-	// 	Name:     "Token",
-	// 	Value:    uuid.NewString(),
-	// 	Path:     "/",
-	// 	MaxAge:   int(time.Hour * 12),
-	// 	SameSite: http.SameSiteLaxMode,
-	// }
-
-	// sessUser, err := tools.Store.Sessions.Storage.Get()
-	// if err != nil {
-	// 	return c.SendString("Не удалось войти! Попробуйте снова")
-	// }
-
-	fmt.Println(c.Cookies("Token"))
-
 	return c.SendString("Удалось войти!")
+}
+
+func Me(c *fiber.Ctx) error {
+	cookieId, err := tools.Store.Sessions.Storage.Get(c.Cookies("Token"))
+	if err != nil {
+		return c.Next()
+	}
+
+	if string(cookieId) == "" {
+		c.Locals("user", nil)
+		return c.Next()
+	}
+
+	var user models.User
+	db.DBConn.Where("id = ?", cookieId).First(&user)
+
+	c.Locals("user", &user)
+
+	fmt.Println(c.Locals("user"))
+
+	return c.Next()
 }
