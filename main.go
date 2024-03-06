@@ -9,6 +9,7 @@ import (
 
 	"simplefiberapp/db"
 	"simplefiberapp/handlers"
+	"simplefiberapp/middleware"
 	"simplefiberapp/tools"
 )
 
@@ -63,5 +64,5 @@ func SetupMiddleware(a *fiber.App) {
 		return c.Next()
 	})
 
-	a.Use(handlers.Me)
+	a.Use(middleware.Me)
 }

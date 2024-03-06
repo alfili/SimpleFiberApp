@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"simplefiberapp/db"
 	"simplefiberapp/models"
 	"simplefiberapp/tools"
@@ -33,16 +32,17 @@ func RegisterUser(c *fiber.Ctx) error {
 	passHash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 
 	if err != nil {
-		return c.SendString("Не удалось зарегистрировать! Попробуйте снова")
+		return c.Render("pages/register", fiber.Map{
+			"Title":  "Ругистрация",
+			"Errors": []string{"Не удалось зарегистрироваться! Попробуйте снова"},
+		}, "layouts/main")
 	}
 
 	newUser := models.User{Username: username, Password: string(passHash)}
 
 	db.DBConn.Create(&newUser)
 
-	return c.Render("pages/register", fiber.Map{
-		"Title": "Войти",
-	}, "layouts/main")
+	return c.Redirect("/login")
 }
 
 // Сессии можно хранить в приложении в формате "токен куки": "id"
@@ -57,7 +57,10 @@ func LoginUser(c *fiber.Ctx) error {
 	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 
 	if err != nil {
-		return c.SendString("Не удалось войти! Попробуйте снова")
+		return c.Render("pages/login", fiber.Map{
+			"Title":  "Войти",
+			"Errors": []string{"Не удалось войти! Попробуйте снова"},
+		}, "layouts/main")
 	}
 
 	c.Cookie(&fiber.Cookie{
@@ -69,29 +72,11 @@ func LoginUser(c *fiber.Ctx) error {
 
 	err = tools.Store.Sessions.Storage.Set(c.Cookies("Token"), []byte(strconv.Itoa(int(user.ID))), time.Hour*12)
 	if err != nil {
-		return c.SendString("Не удалось войти! Попробуйте снова")
+		return c.Render("pages/login", fiber.Map{
+			"Title":  "Войти",
+			"Errors": []string{"Не удалось войти! Попробуйте снова"},
+		}, "layouts/main")
 	}
 
-	return c.SendString("Удалось войти!")
-}
-
-func Me(c *fiber.Ctx) error {
-	cookieId, err := tools.Store.Sessions.Storage.Get(c.Cookies("Token"))
-	if err != nil {
-		return c.Next()
-	}
-
-	if string(cookieId) == "" {
-		c.Locals("user", nil)
-		return c.Next()
-	}
-
-	var user models.User
-	db.DBConn.Where("id = ?", cookieId).First(&user)
-
-	c.Locals("user", &user)
-
-	fmt.Println(c.Locals("user"))
-
-	return c.Next()
+	return c.Redirect("/")
 }
