@@ -47,7 +47,12 @@ func ModsAddPost(c *fiber.Ctx) error {
 
 	db := db.DBConn
 
-	var mod models.Mod = models.Mod{Name: name, Description: description}
+	user, ok := c.Locals("user").(*models.User)
+	if !ok {
+		c.Redirect("/login")
+	}
+
+	var mod models.Mod = models.Mod{Name: name, Description: description, UserID: user.ID}
 	db.Create(&mod)
 
 	return c.Redirect("/mods/")

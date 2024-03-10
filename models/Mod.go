@@ -13,4 +13,5 @@ type Mod struct {
 	DeletedAt   gorm.DeletedAt `gorm:"index"`
 	Name        string         `json:"name" gorm:"unique"`
 	Description string         `json:"description"`
+	UserID      uint
 }

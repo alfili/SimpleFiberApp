@@ -14,4 +14,5 @@ type User struct {
 	Username    string         `json:"username" gorm:"unique"`
 	Password    string         `json:"password"`
 	UserProfile Profile        `gorm:"constraint:OnDelete:CASCADE;"`
+	Mods        []Mod
 }
