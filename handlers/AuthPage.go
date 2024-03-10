@@ -42,6 +42,10 @@ func RegisterUser(c *fiber.Ctx) error {
 
 	db.DBConn.Create(&newUser)
 
+	newProfile := models.Profile{UserID: newUser.ID, Description: ""}
+
+	db.DBConn.Create(&newProfile)
+
 	return c.Redirect("/login")
 }
 

@@ -26,6 +26,7 @@ func ConnectDB() {
 
 	DBConn.AutoMigrate(&models.Mod{})
 	DBConn.AutoMigrate(&models.User{})
+	DBConn.AutoMigrate(&models.Profile{})
 
 	fmt.Println("База данных мигрирована!")
 }
