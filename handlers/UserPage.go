@@ -12,7 +12,7 @@ func UserProfilePage(c *fiber.Ctx) error {
 	username := c.Params("username")
 
 	var user models.User
-	err := db.DBConn.Where("username = ?", username).First(&user).Error
+	err := db.DBConn.Preload("UserProfile").Where("username = ?", username).First(&user).Error
 	if err != nil {
 		return c.Redirect("/")
 	}
