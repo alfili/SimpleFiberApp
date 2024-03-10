@@ -9,6 +9,10 @@ import (
 )
 
 func Me(c *fiber.Ctx) error {
+	if c.Locals("user") != nil {
+		return c.Next()
+	}
+
 	cookieId, err := tools.Store.Sessions.Storage.Get(c.Cookies("Token"))
 	if err != nil {
 		return c.Next()
