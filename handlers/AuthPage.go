@@ -84,3 +84,18 @@ func LoginUser(c *fiber.Ctx) error {
 
 	return c.Redirect("/")
 }
+
+func LogoutUser(c *fiber.Ctx) error {
+
+	err := tools.Store.Sessions.Storage.Delete(c.Cookies("Token"))
+	if err != nil {
+		return c.Render("pages/index", fiber.Map{
+			"Title":  "Войти",
+			"Errors": []string{"Не удалось выйти! Попробуйте снова"},
+		}, "layouts/main")
+	}
+
+	c.ClearCookie()
+
+	return c.Redirect("/")
+}
